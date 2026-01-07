@@ -110,3 +110,17 @@ def create_or_update_profile_with_phone(sender, instance, created, **kwargs):
     if instance.user.profile:
         instance.user.profile.phone = instance
         instance.user.profile.save()
+
+
+User = get_user_model()
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
+    created_at = models.DateTimeField(default=now)
+
+    def is_valid(self):
+        return (now() - self.created_at).total_seconds() < 1800 
+
+    def __str__(self):
+        return f"Reset token for {self.user.email}"
