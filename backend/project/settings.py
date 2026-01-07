@@ -126,3 +126,13 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL='media/'
 MEDIA_ROOT=BASE_DIR / "media"
+
+
+# change user Configs
+AUTH_USER_MODEL = 'userauths.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+LOGIN_REDIRECT_URL = ''
+LOGIN_URL = 'userauths:sign-up'
+LOGOUT_REDIRECT_URL = "userauths:sign-up"
