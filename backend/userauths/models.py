@@ -33,7 +33,7 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     cover_images = models.ImageField(_('Cover Image'), upload_to='Images_Profile', null=True, blank=True, default='user.png')
-    address = models.OneToOneField('Address', null=True, blank=True, on_delete=models.SET_NULL)
+    address = models.CharField('Address', max_length=500, null=True, blank=True)
     phone = models.OneToOneField('Phone', null=True, blank=True, on_delete=models.SET_NULL)
     code = models.CharField(max_length=10, default=generate_code)
     verified = models.BooleanField(_('Verified'), default=False)
@@ -75,3 +75,26 @@ def save_user_profile(sender, instance, **kwargs):
 
 post_save.connect(create_user_profile ,sender=User)
 post_save.connect(save_user_profile ,sender=User)
+
+
+
+Phone_TYPE = [
+    ('Home', 'Home'),
+    ('Student','Student'),
+    ('Father','Father'),
+    ('Mother','Mother'),
+]
+
+
+
+class Phone(models.Model):
+    user = models.ForeignKey(User, related_name='user_phone', on_delete=models.CASCADE)
+    type = models.CharField(_('type'),max_length=20, choices=Phone_TYPE)
+    phone = models.CharField(_('phone'),max_length=30)
+
+    def clean(self):
+        if not self.phone.isdigit():
+            raise ValidationError("Phone number must be numeric.")
+
+    def __str__(self):
+        return f"{self.type} - {self.phone}"
